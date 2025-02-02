@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
 
     char* path = NULL;
 
-    if(argc == 2){
+    if(argc == 2) {
         const char* arg = argv[1];
         
         //check validity.
@@ -156,6 +156,15 @@ int main(int argc, char *argv[]){
         
         memcpy(path, arg, argLen);
         path[argLen] = '\0';
+    }
+    else {
+        path = malloc(MAX_PATH * sizeof(char));
+        if(path == NULL)
+            return EXIT_FAILURE;
+
+        DWORD len = GetCurrentDirectory(MAX_PATH, path);
+        if(len == 0)
+            return EXIT_FAILURE;
     }
 
     SetupConsole();
