@@ -8,7 +8,7 @@
                                  \ \__\ \ \__\\ _\\ \_______\ \_______\
                                   \|__|  \|__|\|__|\|_______|\|_______|
 
-                                  -------Tree comment implementation------   
+                                -------Tree command implementation------   
 
 ```
 
