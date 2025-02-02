@@ -42,6 +42,9 @@ static BOOL IsValidPath(IN const char *path){
     return FALSE;
 }
 
+/**
+ * Setting up console for display.
+ */
 VOID SetupConsole() {
     SetConsoleOutputCP(CP_UTF8);
 
@@ -54,6 +57,8 @@ VOID SetupConsole() {
 
 /**
  * Printing prefixes properly.
+ * @param ctx => ThreeContext ptr
+ * @param level => current level
  */
 VOID PrintPrefix(PTreeContext ctx, int level) {
     for (int i = 0; i < level; i++) {
@@ -68,6 +73,9 @@ VOID PrintPrefix(PTreeContext ctx, int level) {
 
 /**
  * Main TREE function
+ * @param path => path for search (dir)
+ * @param level => current level
+ * @param ctx => ThreeContext
  */
 VOID Tree(IN const char* path, IN INT level, IN PTreeContext ctx){
     WIN32_FIND_DATA findData; 
