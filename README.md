@@ -18,4 +18,4 @@ This simple repo contains a base implementation of tree cmd command using WinAPI
 
 ### Sample : 
 
-<img src="https://github.com/Yekuuun/nebula/blob/main/assets/sample.png" alt="DebugInfo" />
+<img src="https://github.com/Yekuuun/tree/blob/main/assets/sample.png" alt="DebugInfo" />
