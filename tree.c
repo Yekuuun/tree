@@ -1,25 +1,28 @@
+/**
+ * Author : Yekuuun
+ * Github : https://github.com/Yekuuun
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 
-#define MAX_DEPTH 20
+#define MAX_DEPTH 20 //max depth for search.
 
-typedef struct {
+typedef struct TREECONTEXT {
     BOOL isLastChild[MAX_DEPTH];
     INT fileCount;
     INT dirCount;
-} TreeContext;
-
-typedef TreeContext* PTreeContext;
+} TREECONTEXT, *PTREECONTEXT;
 
 /**
  * Base function to handle path.
  * @param path => path provided as tree arg.
  */
-static BOOL IsValidPath(IN const char *path){
-    int len = strlen(path);
+static BOOL IsValidPath(IN const CHAR *cPath){
+    int len = strlen(cPath);
 
-    if(len == 0 || path[0] == '\0')
+    if(len == 0 || cPath[0] == '\0')
         return FALSE;
     
     if(len >= MAX_PATH){
@@ -28,13 +31,13 @@ static BOOL IsValidPath(IN const char *path){
     }
 
     const char* invalidChars = "\\:*?\"<>|";
-    if(strpbrk(path, invalidChars) != NULL){
+    if(strpbrk(cPath, invalidChars) != NULL){
         printf("[!] Invalid caracters. \n");
         return FALSE;
     }
 
     //check if path exist.
-    DWORD dwAttrib = GetFileAttributes((LPCSTR)path);
+    DWORD dwAttrib = GetFileAttributes((LPCSTR)cPath);
     if(dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))
         return TRUE;
     
@@ -45,7 +48,7 @@ static BOOL IsValidPath(IN const char *path){
 /**
  * Setting up console for display.
  */
-VOID SetupConsole() {
+static VOID SetupConsole() {
     SetConsoleOutputCP(CP_UTF8);
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -60,7 +63,7 @@ VOID SetupConsole() {
  * @param ctx => ThreeContext ptr
  * @param level => current level
  */
-VOID PrintPrefix(PTreeContext ctx, int level) {
+static VOID PrintPrefix(IN PTREECONTEXT ctx, IN INT level) {
     for (int i = 0; i < level; i++) {
         if (i == level - 1) {
             printf(ctx->isLastChild[i] ? "└───" : "├───");
@@ -77,7 +80,7 @@ VOID PrintPrefix(PTreeContext ctx, int level) {
  * @param level => current level
  * @param ctx => ThreeContext
  */
-VOID Tree(IN const char* path, IN INT level, IN PTreeContext ctx){
+static VOID Tree(IN const CHAR* path, IN INT level, IN PTREECONTEXT ctx){
     WIN32_FIND_DATA findData; 
     HANDLE hFind = NULL;
 
@@ -90,7 +93,7 @@ VOID Tree(IN const char* path, IN INT level, IN PTreeContext ctx){
     if(hFind == INVALID_HANDLE_VALUE)
         return;
     
-    int count = 0;
+    INT count = 0;
 
     while(FindNextFile(hFind, &findData)){
         if(strcmp(findData.cFileName, ".") == 0 || strcmp(findData.cFileName, "..") == 0)
@@ -105,7 +108,7 @@ VOID Tree(IN const char* path, IN INT level, IN PTreeContext ctx){
     if(hFind == INVALID_HANDLE_VALUE)
         return;
     
-    int currentItem = 0;
+    INT currentItem = 0;
 
     while(FindNextFile(hFind, &findData)){
         if(strcmp(findData.cFileName, ".") == 0 || strcmp(findData.cFileName, "..") == 0)
@@ -137,16 +140,16 @@ int main(int argc, char *argv[]){
         return EXIT_FAILURE;
     }
 
-    char* path = NULL;
+    CHAR* path = NULL;
 
     if(argc == 2) {
-        const char* arg = argv[1];
+        const CHAR* arg = argv[1];
         
         //check validity.
         if(!IsValidPath(arg))
             return EXIT_FAILURE;
 
-        int argLen = strlen(arg);
+        INT argLen = strlen(arg);
         path = malloc((argLen + 1) * sizeof(char));
 
         if(path == NULL){
@@ -168,8 +171,8 @@ int main(int argc, char *argv[]){
     }
 
     SetupConsole();
-    TreeContext ctx = {0};
-    RtlSecureZeroMemory(&ctx, sizeof(TreeContext));
+    TREECONTEXT ctx = {0};
+    RtlSecureZeroMemory(&ctx, sizeof(TREECONTEXT));
 
     printf("%s\n", path);
     Tree(path, 0, &ctx);
